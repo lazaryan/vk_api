@@ -17,11 +17,9 @@
         <!--Ввод данных-->
         <!--Имена переменных совпадают с наименованиями данных, получаемых с сервера-->
         <!--Одно поле-->
-	   <% const items = [{name: 'name', title: 'Имя'},{name: 'surname', title: 'Фамилия'},{name: 'firstname', title: 'Отчество'},
-                        {name: 'company', title: 'Место работы'},{name: 'country', title: 'Страна'}]; %>
+	   
         <!--Несколько полей-->
-        <% const items_list = [['День рождения', {name: 'birth_day', title: 'День'}, {name: 'birth_month', title: 'Месяц'}, {name: 'birth_year', title: 'Год'}],
-                                ['Возраст', {name: 'age_from', title: 'От'}, {name: 'age_to', title: 'До'}]]; %>
+        
 
         <div class="row">
             <div class="col">
@@ -41,27 +39,66 @@
                     <div class="card-header">Внесите данные</div>
                     <div class="card-body">
                         <div class="data" id="js-data">
-                            <% items.forEach((item) => { %>
+                            
                                 <div class="form-group js-list__item">
-                                    <input type="text" data-name="<%=item.name%>" id="<%=item.name%>" class="form-control form-control-sm js-data" placeholder="<%=item.title%>">
+                                    <input type="text" data-name="name" id="name" class="form-control form-control-sm js-data" placeholder="Имя">
                                 </div>
-                            <% }); %>
+                            
+                                <div class="form-group js-list__item">
+                                    <input type="text" data-name="surname" id="surname" class="form-control form-control-sm js-data" placeholder="Фамилия">
+                                </div>
+                            
+                                <div class="form-group js-list__item">
+                                    <input type="text" data-name="firstname" id="firstname" class="form-control form-control-sm js-data" placeholder="Отчество">
+                                </div>
+                            
+                                <div class="form-group js-list__item">
+                                    <input type="text" data-name="company" id="company" class="form-control form-control-sm js-data" placeholder="Место работы">
+                                </div>
+                            
+                                <div class="form-group js-list__item">
+                                    <input type="text" data-name="country" id="country" class="form-control form-control-sm js-data" placeholder="Страна">
+                                </div>
+                            
 
                             <div class="form-group js-list__item _none" id="js-city">
                                 <input type="text" data-name="city" id="city" class="form-control form-control-sm js-data" placeholder="Город">
                             </div>
-                            <% items_list.forEach((items) => { %>
+                            
                                 <div class="form-group">
-                                    <label><%=items[0]%></label>
+                                    <label>День рождения</label>
                                     <div class="row js-list__item">
-                                        <% for(let i = 1; i < items.length; i++) { %>
+                                        
                                             <div class="col">
-                                                <input type="text" data-name="<%=items[i].name%>" id="<%=items[i].name%>" class="form-control form-control-sm js-data"  placeholder="<%=items[i].title%>">
+                                                <input type="text" data-name="birth_day" id="birth_day" class="form-control form-control-sm js-data"  placeholder="День">
                                             </div>
-                                        <%} %>
+                                        
+                                            <div class="col">
+                                                <input type="text" data-name="birth_month" id="birth_month" class="form-control form-control-sm js-data"  placeholder="Месяц">
+                                            </div>
+                                        
+                                            <div class="col">
+                                                <input type="text" data-name="birth_year" id="birth_year" class="form-control form-control-sm js-data"  placeholder="Год">
+                                            </div>
+                                        
                                     </div>
                                 </div>
-                            <% }); %>
+                            
+                                <div class="form-group">
+                                    <label>Возраст</label>
+                                    <div class="row js-list__item">
+                                        
+                                            <div class="col">
+                                                <input type="text" data-name="age_from" id="age_from" class="form-control form-control-sm js-data"  placeholder="От">
+                                            </div>
+                                        
+                                            <div class="col">
+                                                <input type="text" data-name="age_to" id="age_to" class="form-control form-control-sm js-data"  placeholder="До">
+                                            </div>
+                                        
+                                    </div>
+                                </div>
+                            
                         </div>
                         <button class="btn btn-primary" id="js-get_list">Получить</button>
                     </div>
