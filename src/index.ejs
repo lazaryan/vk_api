@@ -2,86 +2,97 @@
 <html lang="en">
 <head>
         <meta   charset="UTF-8">
-        <meta   name="viewport"
-                content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-        <meta   http-equiv="X-UA-Compatible"
-                content="ie=edge">
-
         <title>VK API</title>
 
-        <link rel="stylesheet" type="text/css" href="css/normalize.min.css">
-        <link rel="stylesheet" type="text/css" href="css/main.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">-->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
+	<div class="container">
         <!--Ввод данных-->
         <!--Имена переменных совпадают с наименованиями данных, получаемых с сервера-->
         <!--Одно поле-->
-        <% const list = [{name: 'q', text: 'Имя пользователя'}, {name: 'company', text: 'Место работы'},
-        {name: 'interests', text: 'Интересы'}, {name: 'position', text: 'Должность'}, {name: 'country', text: 'Страна'}]; %>
+	   <% const items = [{name: 'name', title: 'Имя'},{name: 'surname', title: 'Фамилия'},{name: 'firstname', title: 'Отчество'},
+                        {name: 'company', title: 'Место работы'},{name: 'country', title: 'Страна'}]; %>
         <!--Несколько полей-->
-        <% const list2 = [{name: 'Возраст', context: [{text: 'от', name: 'age_from'}, {text: 'до', name: 'age_to'}]},
-        {name: 'День рождения', context: [{text: 'дд:', name: 'birth_day'}, {text: 'мм:', name: 'birth_month'}, {text: 'гггг:', name: 'birth_year'}]}]; %>
-        <div class="get_data fill_display" id="js-get_data">
-                <div class="message">
-                        <h3 class="message_text">Внесите данные</h3>
+        <% const items_list = [['День рождения', {name: 'birth_day', title: 'День'}, {name: 'birth_month', title: 'Месяц'}, {name: 'birth_year', title: 'Год'}]]; %>
+
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-primary" role="alert">
+                  Задача поиска людей в интеренете была выполнена частично. C помощью использования API Vkontakte.
+                  Дальнейшее развитие задачи можно сделать с использованием  других популярных социальных сетей и API Google.
+                  <br><br>Работоспособность можно проверить в своем браузере, при наличии подключения к сети.
+                  <br>Либо посмотреть исходный код на <a href="https://github.com/oleg-tgn/vk-search">Github</a>
+                  <br>Протестировать онлайн на <a href="https://oleg-tgn.github.io/vk-search/">Github Pages</a>
                 </div>
-                <div class="data" id="js-data">
-                    <% list.forEach((item) =>{%>
-                        <div class="list__item js-list__item">
-                            <label class="name-item" for="<%=item.name%>" data-value="<%=item.name%>">
-                                <%=item.text%>
-                            </label>
-                            <input type="text" id="<%=item.name%>" class="name-item_enter">
-                        </div>
-                    <% }); %>
-                    <div class="list__item js-list__item _none" id="js-city">
-                        <label class="name-item" for="city" data-value="city">
-                                Город
-                        </label>
-                       	<input type="text" id="city" class="name-item_enter">
-                    </div>
-                    <% list2.forEach((item) =>{ %>
-                        <div class="list__item">
-                            <div class="name-item">
-                                <%=item.name%>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="get_data card" id="js-get_data">
+                    <div class="card-header">Внесите данные</div>
+                    <div class="card-body">
+                        <div class="data" id="js-data">
+                            <% items.forEach((item) => { %>
+                                <div class="form-group js-list__item">
+                                    <input type="text" data-name="<%=item.name%>" id="<%=item.name%>" class="form-control form-control-sm js-data" placeholder="<%=item.title%>">
+                                </div>
+                            <% }); %>
+
+                            <div class="form-group js-list__item _none" id="js-city">
+                                <input type="text" data-name="city" id="city" class="form-control form-control-sm js-data" placeholder="Город">
                             </div>
-                            <div class="list__item_input js-list__item">
-                                <% item.context.forEach((item2) => {%>
-                                    <div class="list__item_input-i">
-                                        <label class="name-item2" for="<%=item2.name%>" data-value="<%=item2.name%>">
-                                            <%=item2.text%>
-                                        </label>
-                                        <input type="text" id="<%=item2.name%>" class="name-item2_enter">
+                            <% items_list.forEach((items) => { %>
+                                <div class="form-group">
+                                    <label><%=items[0]%></label>
+                                    <div class="row js-list__item">
+                                        <% for(let i = 1; i < items.length; i++) { %>
+                                            <div class="col">
+                                                <input type="text" data-name="<%=items[i].name%>" id="<%=items[i].name%>" class="form-control form-control-sm js-data"  placeholder="<%=items[i].title%>">
+                                            </div>
+                                        <%} %>
                                     </div>
-                                <% }); %>
-                            </div>
+                                </div>
+                            <% }); %>
                         </div>
-                    <% }); %>
+                        <button class="btn btn-primary" id="js-get_list">Получить</button>
+                    </div>
                 </div>
-                <div class="get-list">
-                        <button class="get" id="js-get_list">Получить</button>
+            </div>
+
+            <!--Список пользователей вк, подходящих критерию-->
+            <div class="col-sm-4">
+                <div class="list-people card">
+                    <div class="card-header">Результат поиска</div>
+                    <div class="card-body">
+                        <div class="data" id="data-peoples"></div>
+                    </div>
                 </div>
-        </div>
-        <!--Полученные данные-->
-        <div class="information fill_display">
-            <div class="message">
-                <h3 class="message_text">Данные пользователя</h3>
             </div>
-            <div class="data"></div>
-        </div>
-        <!--Список пользователей вк, подходящих критерию-->
-        <div class="list-people fill_display">
-            <div class="message">
-                <h3 class="message_text">Результат поиска</h3>
+            <!--Полученные данные-->
+            <div class="col-sm-4">
+                <div class="information card">
+                    <div class="card-header">Данные пользователя</div>
+                    <div class="card-body">
+                        <div class="data" id="data-info"></div>
+                    </div>
+                </div>
             </div>
-            <div class="data"></div>
         </div>
+    </div>
         <!--библиотека JQuery-->
-        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
         <!--Для работы с вк-->
         <script type="text/javascript" src="https://vk.com/js/api/xd_connection.js?2"></script>
         <!--Мои методы-->
-        <script type="text/javascript" src="js/my_vk.min.js"></script>
-        <script type="text/javascript" src="js/main.min.js"></script>
+        <script type="text/javascript" src="js/my_vk.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>

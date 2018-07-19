@@ -48,22 +48,22 @@ function loadPeoples(){
         dataPeople          = [];
         CountLoadPeoples    = 0;
 
-	sendRequest('users.search', param, (data) => {
+        sendRequest('users.search', param, (data) => {
                 dataPeople = data.response.items;
                 CountLoadPeoples = data.response.count;
 
-                let block = document.querySelector('.list-people>.data');
+                let block = document.getElementById('data-peoples');
                 block.innerHTML = '';
 
                 GetListPeoples(data.response.items);
-	})
+        })
 }
 
 const form      = document.querySelector('#js-get_data');
 const form_butt = form.querySelector('#js-get_list');
 
 form_butt.addEventListener("click", () => {
-        document.querySelector('.information>.data').innerHTML = '';
+        document.getElementById('data-info').innerHTML = '';
         param.offset = 0;
 
         SetData();                               //получаем все данные
@@ -75,16 +75,14 @@ function SetData(){
         let p = {};
 
         for (let i = 0; i < par.length; i++){
-                let name = par[i].querySelectorAll('label');
-                let text = par[i].querySelectorAll('input');
+                let data = par[i].querySelectorAll('.js-data');
 
-                for(let j = 0; j < name.length; j++){
-                        p[name[j].dataset.value] = $.trim(name[j].dataset.value);
-                        text[j].value = $.trim(text[j].value);
+                for(let i = 0; i < data.length; i++){
+                    let text = $.trim(data[i].dataset.name);
+                    let value = $.trim(data[i].value);
 
-                        p[name[j].dataset.value] = text[j].value;
+                    p[text] = value;
                 }
-
         }
 
         comleteData(p);
@@ -94,13 +92,14 @@ function comleteData(par){
         let keys = Object.keys(par);
 
         getData(par, keys);
+        GetName(par, keys)
         getCountry(par);
         GetIdCity(par);
 }
 
 function getData(par, keys){
         keys.forEach((item) => {
-                if(item != 'country' && item != 'city'){
+                if(item != 'country' && item != 'city' && item.indexOf('name') == -1){
                         par[item] ? param[item] = par[item] : delete param[item];
                 }
         });
@@ -113,13 +112,24 @@ function getCountry(par){
                 delete param['country'];
         }
 }
+
+function GetName(par, keys){
+        let s ='';
+        keys.forEach((item) => {
+                if(item.indexOf('name') !== -1 && par[item]){
+                        s == '' ? s+= par[item] : s+= ' ' + par[item];
+                }
+        });
+
+        (s != '') ? param['q'] = s : delete param['q'];
+}
 /*
 ---------------------------------------------------------------
                         получение списка людей
 ---------------------------------------------------------------
 */
 function GetListPeoples(data){
-        let block = document.querySelector('.list-people>.data');
+        let block = document.getElementById('data-peoples');
         let html = '';
 
         if(data && data.length !== 0){
@@ -129,10 +139,9 @@ function GetListPeoples(data){
                                             '<img src="'+ data[i].photo_100 +'" class="list-people_img-i">' +
                                     '</a> '+
                                     '<div class="list-people_info">' +
-                                            '<p class="list-people__name">'+ data[i].last_name +'</p>' +
-                                            '<p class="list-people__name">'+ data[i].first_name +'</p>' +
-                                            '<button class="add-info button-for-list js-add-info" onclick="GetMaxInfo(id);" id="'+ (+i + param.offset) +'">Показать больше</button>' +
-                                            '<button class="add-info button-for-list" onclick="GetNewsFeed(id);" id="_'+ (+i + param.offset) +'">Поиск записей</button>' +
+                                            '<span class="list-people__name">'+ data[i].last_name +'</span> ' +
+                                            '<span class="list-people__name">'+ data[i].first_name +'</span>' +
+                                            '<button class="btn btn-primary btn-sm js-add-info" onclick="GetMaxInfo(id);" id="'+ (+i + param.offset) +'">Показать больше</button>' +
                                     '</div>' +
                             '</div>';
             }
@@ -147,7 +156,7 @@ function GetListPeoples(data){
 
             if(CountLoadPeoples > (+id + 1)){
                     html = '<div class="get-peoples" id="AddPeoples">' +
-                                    '<button class="get-peoples-i" onclick="GetNewPeoples();">Добавить</button>' +
+                                    '<button class="btn btn-success btn-block" onclick="GetNewPeoples();">Добавить</button>' +
                             '</div>';
 
                     block.innerHTML += html;
@@ -173,11 +182,10 @@ function GetNewPeoples(){
 -----------------------------------------------------------------
 */
 function GetMaxInfo(id){
-        fillBlock(id);
         let data = dataPeople[id];
         let keys = Object.keys(data);
 
-        let form = document.querySelector('.information>.data');
+        let form = document.getElementById('data-info');
         let html = '';
 
         form.innerHTML = '';
@@ -186,7 +194,7 @@ function GetMaxInfo(id){
         if(data['career'])  data['career'] = data['career'].company;
 
         keys.forEach((item) => {
-                if(data[item] && item.indexOf('photo') === -1){
+                if(data[item] && item.indexOf('photo') === -1 && dictionary[item]){
                         html += '<div class="info">' +
                                         '<div class="info_name">' +
                                                 '<p class="info_name-i">' + dictionary[item] + '</p>' +
@@ -201,67 +209,6 @@ function GetMaxInfo(id){
         form.innerHTML = html;
 }
 
-function fillBlock(id){
-        if(document.querySelector('._active')){
-                let b = document.querySelector('._active');
-                b.classList.toggle('_active');
-        }
-
-        let block = document.getElementById("people_" + id);
-        block.classList.add("_active");
-}
-
-/*
---------------------------------------------
-                Поиск записей
---------------------------------------------
-*/
-
-function GetNewsFeed(id){
-        id = id.substring(1);
-        fillBlock(id);
-        let id_people = dataPeople[id].id;
-
-        let search = {
-                owner_id: id_people,
-                count: 50
-        }
-
-        sendRequest('newsfeed.getMentions', search, (data) => {
-                GetListNewsFeed(data.response.items);
-        });
-}
-
-function GetListNewsFeed(data){
-        let form = document.querySelector('.information>.data');
-        let html = '';
-
-        data.forEach((item) => {
-                html += '<div class="news-feed">'+
-                                '<div class="user-news">' +
-                                        '<div class="info_name">' +
-                                                '<p class="info_name-i">Ссылка на пользователя</p>' +
-                                        '</div>' +
-                                        '<div class="info_text">' +
-                                                '<a class="info_name-i" href="https://vk.com/id'+ item.from_id +'" target="_blank">Перейти</a>' +
-                                        '</div>' +
-                                        '<div class="info_name">' +
-                                                '<p class="info_name-i">Дата записи</p>' +
-                                        '</div>' +
-                                        '<div class="info_text">' +
-                                                '<p class="info_name-i">'+ item.date +'</p>' +
-                                        '</div>' +
-                                '</div>' +
-                                '<div class="news-feed_text">' +
-                                        item.text
-                                '</div>' +
-                        '</div>';
-        });
-
-        form.innerHTML = html;
-}
-
-
 /*
 -----------------------------------------------------------
                 поиск по городу
@@ -269,6 +216,9 @@ function GetListNewsFeed(data){
 */
 
 let input_country = document.getElementById('country');
+if(input_country.value){
+    document.getElementById('js-city').classList.remove('_none');
+}
 
 input_country.oninput = function () {
     let text = this.value;

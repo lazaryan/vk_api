@@ -1,153 +1,124 @@
-$color_active: #fff
-$fill_blocks: #D0CFDE
-$color_button: #A4A4A4
-$color_border: #a22
-
 button
-	cursor: pointer
+        cursor: pointer
 
 .message
-	width: 100%
-	height: 50px
-	border-bottom: 1px solid #000
+        width: 100%
+        height: 50px
+        border-bottom: 1px solid #000
 
-	&_text
-		text-align: center
-		line-height: 50px
+        &_text
+                text-align: center
+                line-height: 50px
 
 .fill_display
-	background-color: $fill_blocks
-	border: 2px solid $color_border
-
+	background-color: #D0CFDE
+	border: 2px solid #a22
 
 .get
 	width: 200px
-	height: 60px
-	margin-top: 30px
-	background-color: $color_button
-	outline: none
-	border: none
-	margin-left: 50%
-	transform: translateX(-100px)
-
-	&_data
-		width: 500px
-		float: left
+  	height: 60px
+  	background-color: #A4A4A4
+  	outline: none
+  	border: none
+  	margin: 15px auto
 
 	&-list
 		width: 100%
 		height: 120px
 
 	&-peoples
-		width: 100%
-		height: 100px
+  		width: 100%
+  		height: 100px
 
-		&-i
-			width: 100%
-			height: 100%
-			background-color: $color_button
-			outline: none
-			border: none
-
+  		&-i
+  			width: 100%
+  			height: 100%
+  			background-color: #A4A4A4
+      			outline: none
+      			border: none
 
 .list
 	&__item
 		width: 100%
-		height: 40px
-		margin:
-			top: 15px
-			bottom: 15px
+  		height: 40px
+  		margin-top: 15px
+  		margin-bottom: 15px
 
 		&_input
-			width: 300px
-			float: right
+  			width: 300px
+  			float: right
 
-			&-i
-				width: 80px
-				height: 100%
-				float: left
+  			&-i
+  				width: 80px
+  				height: 100%
+  				float: left
 
-.name
-	&-item
+.name-item
+  	float: left
+  	display: block
+  	width: 170px
+  	padding-left: 20px
+  	font-size: 1.2em
+
+  	&_enter
+  		width: 270px
+  		height: 20px
+  		font-size: 15px
+
+  		&:focus
+  			outline: none
+
+  	&2
+  		width: 20px
+  		font-size: 1em
+  		display: block
+  		float: left
+
+  		&_enter
+  			width: 50px
+
+.list-people
+	height: 443px
+	overflow: auto
+
+	&__item
+		display: inline-block
+		width: 100%
+		margin: 0 0 10px 0
+		padding: 0
+		transition: .5s
+
+		&:hover
+			background-color: #fff
+
+	&_img
+		width: 70px
+		height: 70px
 		float: left
-		display: block
-		width: 170px
-		padding-left: 20px
-		font-size: 1.2em
+		margin-left: 15px
 
-		&2
-			width: 20px
-			font-size: 1em
-			display: blick
-			float: left
+		&-i
+			width: 100%
+			height: 100%
+			margin: 0 auto
+			border-radius: 50%
 
-			&_enter
-				width: 50px
-
-		&_enter
-			width: 270px
-			height: 20px
-			font-size: 15px
-
-			&:focus
-				outline: none
-
-.information
-	width: 600px
-	margin-left: 10px
-	float: left
-
-
-._active
-	background-color: $color_active
-
-.list
-	&-people
-		width: 430px
+	&_info
+		width: calc(100% - 95px)
+		padding-left: 10px
 		float: right
 
-		&__item
-			display: inline-block
-			width: 100%
-			height: 140px
-			margin: 0
-			padding: 0
-			transition: .5s
-
-			&:hover
-				background-color: $color_active
-
-		&_img
-			width: 100px
-			height: 100px
-			float: left
-			margin:
-				top: 20px
-				left: 15px
-
-			&-i
-				width: 100%
-				height: 100%
-				margin: 0 auto
-				border-radius: 50%
-
-		&_info
-			height: 100%
-			width: 300px
-			float: right
-
-		&__name
-			width: 100%
-			color: #000
-			font-size: 20px
-			line-height: 40px
-			text-align: center
-			margin: 0
+	&__name
+		display: inline-block
+		color: #000
+		font-size: 16px
+		line-height: 1.5
+		margin-bottom: 15px
 
 .button-for-list
 	width: 120px
 	height: 50px
-	background-color: $color_button
+	background-color: #A4A4A4
 	text-align: center
 	border-radius: 5px
 
@@ -156,6 +127,7 @@ button
 	margin-left: 10px
 	cursor: pointer
 	line-height: 25px
+	text-align: center
 
 	&:focus
 		outline: none
@@ -169,10 +141,8 @@ button
 
 .data
 	width: 100%
-	min-height: 150px
 	margin: 0
 	padding: 0
-
 
 .info
 	width: 100%
@@ -184,8 +154,6 @@ button
 		float: left
 
 	&_text
-		width: 400px
-		min-height: 50px
 		float: right
 
 .lack-people
@@ -193,3 +161,11 @@ button
 
 ._none
 	display: none
+
+.information
+	height: 443px
+	overflow: auto
+	margin-bottom: 35px
+
+.container
+	margin-top: 15px

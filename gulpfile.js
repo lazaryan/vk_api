@@ -53,9 +53,6 @@ gulp.task('styles', () => {
             sourceMap: true,
             debug: true
         })))
-        .pipe(rename({
-            suffix: ".min"
-        }))
         .pipe(gulp.dest('./dist/css'));
 });
 
@@ -63,9 +60,6 @@ gulp.task('js', () => {
     gulp.src('src/js/**/*.js')
         .pipe(plumber())
         .pipe(gulpif(!IsDevelopment, uglify()))
-        .pipe(rename({
-            suffix: ".min"
-        }))
         .pipe(gulp.dest('./dist/js'));
 });
 
