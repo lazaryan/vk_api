@@ -27,9 +27,7 @@ const dictionary = {
         status: 'статус пользователя'
 };
 
-let dataPeople          = [];   //информация о людях
-let idCountry           = {};   //id всех стран
-let CountLoadPeoples    = 0;    //сколько людей загружено
+let [dataPeople, idCountry, CountLoadPeoples] = [[], {}, 0];
 
 sendRequest('database.getCountries', {need_all: 1, count: 250}, (data) =>{
         let c = data.response.items;
@@ -46,8 +44,8 @@ sendRequest('database.getCountries', {need_all: 1, count: 250}, (data) =>{
 function loadPeoples(){
         sendRequest('users.search', param, (data) => {
                 if(CountLoadPeoples === 0 || data.response.count === 0 || CountLoadPeoples !== data.response.count){
-                        dataPeople = data.response.items;
-                        CountLoadPeoples = data.response.count;
+                        dataPeople              = data.response.items;
+                        CountLoadPeoples        = data.response.count;
 
                         let block = document.getElementById('data-peoples');
                         block.innerHTML = '';
@@ -77,12 +75,8 @@ function SetData(){
         for (let i = 0; i < par.length; i++){
                 let data = par[i].querySelectorAll('.js-data');
 
-                for(let i = 0; i < data.length; i++){
-                    let text = $.trim(data[i].dataset.name);
-                    let value = $.trim(data[i].value);
-
-                    p[text] = value;
-                }
+                for(let i = 0; i < data.length; i++)
+                    p[$.trim(data[i].dataset.name)] = $.trim(data[i].value);
         }
 
         comleteData(p);
@@ -116,9 +110,7 @@ function getCountry(par){
 function GetName(par, keys){
         let s ='';
         keys.forEach((item) => {
-                if(item.indexOf('name') !== -1 && par[item]){
-                        s == '' ? s+= par[item] : s+= ' ' + par[item];
-                }
+                (item.indexOf('name') !== -1 && par[item]) ? (s == '' ? s+= par[item] : s+= ' ' + par[item]) : '';
         });
 
         (s != '') ? param['q'] = s : delete param['q'];
@@ -134,16 +126,16 @@ function GetListPeoples(data){
 
         if(data && data.length !== 0){
             for(let i = 0; i < data.length; i++){
-                    html += '<div class="list-people__item js-list-people__item" id="people_'+ (+i + param.offset) +'">' +
-                                    '<a class="list-people_img" href="https://vk.com/id'+ data[i].id +'" target="_blank">' +
-                                            '<img src="'+ data[i].photo_100 +'" class="list-people_img-i">' +
-                                    '</a> '+
-                                    '<div class="list-people_info">' +
-                                            '<span class="list-people__name">'+ data[i].last_name +'</span> ' +
-                                            '<span class="list-people__name">'+ data[i].first_name +'</span>' +
-                                            '<button class="btn btn-primary btn-sm js-add-info" onclick="GetMaxInfo(id);" id="'+ (+i + param.offset) +'">Показать больше</button>' +
-                                    '</div>' +
-                            '</div>';
+                        html += `<div class="list-people__item js-list-people__item" id="people_${+i + param.offset}">
+                                        <a class="list-people_img" href="https://vk.com/id${data[i].id}" target="_blank">
+                                                <img src="${data[i].photo_100}" class="list-people_img-i">
+                                        </a>
+                                        <div class="list-people_info">
+                                                <span class="list-people__name">${data[i].last_name}</span>
+                                                <span class="list-people__name">${data[i].first_name}</span>
+                                                <button class="btn btn-primary btn-sm js-add-info" onclick="GetMaxInfo(id);" id="${+i + param.offset}">Показать больше</button>
+                                        </div>
+                                </div>`;
             }
             block.innerHTML += html;
 
@@ -155,14 +147,14 @@ function GetListPeoples(data){
                     but.parentNode.removeChild(but);
 
             if(CountLoadPeoples > (+id + 1)){
-                    html = '<div class="get-peoples" id="AddPeoples">' +
-                                    '<button class="btn btn-success btn-block" onclick="GetNewPeoples();">Добавить</button>' +
-                            '</div>';
+                    html = `<div class="get-peoples" id="AddPeoples">
+                                    <button class="btn btn-success btn-block" onclick="GetNewPeoples();">Добавить</button>
+                            </div>`;
 
                     block.innerHTML += html;
             }
         }else{
-            block.innerHTML = '<h2 class="lack-people">Пользователи не найдены</h2>';
+            block.innerHTML = `<h2 class="lack-people">Пользователи не найдены</h2>`;
         }
 }
 
@@ -189,20 +181,20 @@ function GetMaxInfo(id){
         let html = '';
 
         form.innerHTML = '';
-        if(data['city']) data['city'] = data['city'].title;
-        if(data['country'])  data['country'] = data['country'].title;
-        if(data['career'])  data['career'] = data['career'].company;
+        if(data['city'])        data['city']    = data['city'].title;
+        if(data['country'])     data['country'] = data['country'].title;
+        if(data['career'])      data['career']  = data['career'].company;
 
         keys.forEach((item) => {
                 if(data[item] && item.indexOf('photo') === -1 && dictionary[item]){
-                        html += '<div class="info">' +
-                                        '<div class="info_name">' +
-                                                '<p class="info_name-i">' + dictionary[item] + '</p>' +
-                                        '</div>' +
-                                        '<div class="info_text">' +
-                                                '<p class="info_name-i">' + data[item] + '</p>' +
-                                        '</div>' +
-                                '</div>';
+                        html += `<div class="info">
+                                        <div class="info_name">
+                                                <p class="info_name-i">${dictionary[item]}</p>
+                                        </div>
+                                        <div class="info_text">
+                                                <p class="info_name-i">${data[item]}</p>
+                                        </div>
+                                </div>`;
                 }
         });
 
@@ -224,16 +216,11 @@ input_country.oninput = function () {
     let text = this.value;
     let b = document.getElementById('js-city');
 
-    if(text && b.classList.contains('_none')){
-        b.classList.remove('_none');
-    }else if(!text){
-        b.classList.add('_none');
-    }
+    (text && b.classList.contains('_none')) ? b.classList.remove('_none') : (!text) ? b.classList.add('_none') : '';
 }
 
 function GetIdCity(par){
     if(par['country'] && idCountry[par['country']] && par['city']){
-        //console.log('city');
         let p = {
             country_id: idCountry[par['country']],
             q: par['city'],
@@ -245,7 +232,6 @@ function GetIdCity(par){
                 (id !== -1)? param['city'] = id : delete param['city'];
         })
     }else if(!par['city']){
-        //console.log('not city');
         delete param['city'];
     }
 }
@@ -254,10 +240,9 @@ function GetCity(city, items){
     if(items.length == 1)
         return items[0].id;
 
-    for(let i = 0; i < items.length; i++){
+    for(let i = 0; i < items.length; i++)
         if(city.length == items[i].title.length)
             return items[i].id;
-    }
 
     return -1;
 }
