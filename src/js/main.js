@@ -44,18 +44,18 @@ sendRequest('database.getCountries', {need_all: 1, count: 250}, (data) =>{
 --------------------------------------------------
 */
 function loadPeoples(){
-        //обнуляем данные поиска
-        dataPeople          = [];
-        CountLoadPeoples    = 0;
-
         sendRequest('users.search', param, (data) => {
-                dataPeople = data.response.items;
-                CountLoadPeoples = data.response.count;
+                if(CountLoadPeoples === 0 || data.response.count === 0 || CountLoadPeoples !== data.response.count){
+                        dataPeople = data.response.items;
+                        CountLoadPeoples = data.response.count;
 
-                let block = document.getElementById('data-peoples');
-                block.innerHTML = '';
+                        let block = document.getElementById('data-peoples');
+                        block.innerHTML = '';
 
-                GetListPeoples(data.response.items);
+                        GetListPeoples(data.response.items);
+                }else{
+                      loadPeoples();
+                }
         })
 }
 
@@ -91,10 +91,10 @@ function SetData(){
 function comleteData(par){
         let keys = Object.keys(par);
 
-        getData(par, keys);
-        GetName(par, keys)
         getCountry(par);
         GetIdCity(par);
+        getData(par, keys);
+        GetName(par, keys)
 }
 
 function getData(par, keys){
@@ -233,6 +233,7 @@ input_country.oninput = function () {
 
 function GetIdCity(par){
     if(par['country'] && idCountry[par['country']] && par['city']){
+        //console.log('city');
         let p = {
             country_id: idCountry[par['country']],
             q: par['city'],
@@ -240,10 +241,11 @@ function GetIdCity(par){
         }
 
         sendRequest('database.getCities', p, (data) => {
-            let id = GetCity(par['city'], data.response.items);
-            (id !== -1)? param['city'] = id : delete param['city'];
+                let id = GetCity(par['city'], data.response.items);
+                (id !== -1)? param['city'] = id : delete param['city'];
         })
     }else if(!par['city']){
+        //console.log('not city');
         delete param['city'];
     }
 }
