@@ -75,8 +75,8 @@ function SetData(){
         for (let i = 0; i < par.length; i++){
                 let data = par[i].querySelectorAll('.js-data');
 
-                for(let i = 0; i < data.length; i++)
-                    p[$.trim(data[i].dataset.name)] = $.trim(data[i].value);
+                for(let j = 0; j < data.length; j++)
+                    p[$.trim(data[j].dataset.name)] = $.trim(data[j].value);
         }
 
         comleteData(p);
