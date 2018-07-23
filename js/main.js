@@ -1,12 +1,13 @@
+'use strict';
+
 //стартовые конфигурации
-let param = {
+var param = {
         count: 50,
         fields: 'about,bdate,career,city,contacts,country,interests,photo_100,activities,movies,music,nickname,quotes,site,status',
         search_global: 1,
         offset: 0
-}
-//словарь
-const dictionary = {
+        //словарь
+};var dictionary = {
         id: 'Идентификатор',
         first_name: 'Имя',
         last_name: 'Фамилия',
@@ -27,15 +28,16 @@ const dictionary = {
         status: 'статус пользователя'
 };
 
-let dataPeople          = [];   //информация о людях
-let idCountry           = {};   //id всех стран
-let CountLoadPeoples    = 0;    //сколько людей загружено
+var dataPeople = [],
+    idCountry = {},
+    CountLoadPeoples = 0;
 
-sendRequest('database.getCountries', {need_all: 1, count: 250}, (data) =>{
-        let c = data.response.items;
 
-        c.forEach((item) => {
-              idCountry[item.title] = item.id;
+sendRequest('database.getCountries', { need_all: 1, count: 250 }, function (data) {
+        var c = data.response.items;
+
+        c.forEach(function (item) {
+                idCountry[item.title] = item.id;
         });
 });
 /*
@@ -43,133 +45,152 @@ sendRequest('database.getCountries', {need_all: 1, count: 250}, (data) =>{
                 Получение данных
 --------------------------------------------------
 */
-function loadPeoples(){
-        //обнуляем данные поиска
-        dataPeople          = [];
-        CountLoadPeoples    = 0;
+function loadPeoples() {
+        sendRequest('users.search', param, function (data) {
+                if (CountLoadPeoples === 0 || data.response.count === 0 || CountLoadPeoples !== data.response.count) {
+                        dataPeople = data.response.items;
+                        CountLoadPeoples = data.response.count;
 
-        sendRequest('users.search', param, (data) => {
-                dataPeople = data.response.items;
-                CountLoadPeoples = data.response.count;
+                        var block = document.getElementById('data-peoples');
+                        block.innerHTML = '';
 
-                let block = document.getElementById('data-peoples');
-                block.innerHTML = '';
-
-                GetListPeoples(data.response.items);
-        })
+                        GetListPeoples(data.response.items);
+                } else {
+                        loadPeoples();
+                }
+        });
 }
 
-const form      = document.querySelector('#js-get_data');
-const form_butt = form.querySelector('#js-get_list');
+var form = document.querySelector('#js-get_data');
+var form_butt = form.querySelector('#js-get_list');
 
-form_butt.addEventListener("click", () => {
+form_butt.addEventListener("click", function () {
         document.getElementById('data-info').innerHTML = '';
         param.offset = 0;
 
-        SetData();                               //получаем все данные
-        loadPeoples();                           //делаем запрос
+        SetData(); //получаем все данные
+        loadPeoples(); //делаем запрос
 });
 
-function SetData(){
-        let par = form.querySelectorAll('.js-list__item');
-        let p = {};
+function SetData() {
+        var par = form.querySelectorAll('.js-list__item');
+        var p = {};
 
-        for (let i = 0; i < par.length; i++){
-                let data = par[i].querySelectorAll('.js-data');
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
-                for(let i = 0; i < data.length; i++){
-                    let text = $.trim(data[i].dataset.name);
-                    let value = $.trim(data[i].value);
+        try {
+                for (var _iterator = par[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var _param = _step.value;
 
-                    p[text] = value;
+                        var data = _param.querySelectorAll('.js-data');
+
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
+
+                        try {
+                                for (var _iterator2 = data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                        var info = _step2.value;
+
+                                        p[$.trim(info.dataset.name)] = $.trim(info.value);
+                                }
+                        } catch (err) {
+                                _didIteratorError2 = true;
+                                _iteratorError2 = err;
+                        } finally {
+                                try {
+                                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                                _iterator2.return();
+                                        }
+                                } finally {
+                                        if (_didIteratorError2) {
+                                                throw _iteratorError2;
+                                        }
+                                }
+                        }
+                }
+        } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+        } finally {
+                try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                                _iterator.return();
+                        }
+                } finally {
+                        if (_didIteratorError) {
+                                throw _iteratorError;
+                        }
                 }
         }
 
         comleteData(p);
 }
 
-function comleteData(par){
-        let keys = Object.keys(par);
+function comleteData(par) {
+        var keys = Object.keys(par);
 
-        getData(par, keys);
-        GetName(par, keys)
         getCountry(par);
         GetIdCity(par);
+        getData(par, keys);
+        GetName(par, keys);
 }
 
-function getData(par, keys){
-        keys.forEach((item) => {
-                if(item != 'country' && item != 'city' && item.indexOf('name') == -1){
-                        par[item] ? param[item] = par[item] : delete param[item];
-                }
+function getData(par, keys) {
+        keys.forEach(function (item) {
+                item != 'country' && item != 'city' && item.indexOf('name') == -1 ? par[item] ? param[item] = par[item] : delete param[item] : '';
         });
 }
 
-function getCountry(par){
-        if(par['country'] && idCountry[par['country']]){
-                param['country'] = idCountry[par['country']];
-        }else{
-                delete param['country'];
-        }
+function getCountry(par) {
+        par['country'] && idCountry[par['country']] ? param['country'] = idCountry[par['country']] : delete param['country'];
 }
 
-function GetName(par, keys){
-        let s ='';
-        keys.forEach((item) => {
-                if(item.indexOf('name') !== -1 && par[item]){
-                        s == '' ? s+= par[item] : s+= ' ' + par[item];
-                }
+function GetName(par, keys) {
+        var s = '';
+        keys.forEach(function (item) {
+                item.indexOf('name') !== -1 && par[item] ? s == '' ? s += par[item] : s += ' ' + par[item] : '';
         });
 
-        (s != '') ? param['q'] = s : delete param['q'];
+        s != '' ? param['q'] = s : delete param['q'];
 }
 /*
 ---------------------------------------------------------------
                         получение списка людей
 ---------------------------------------------------------------
 */
-function GetListPeoples(data){
-        let block = document.getElementById('data-peoples');
-        let html = '';
+function GetListPeoples(data) {
+        var block = document.getElementById('data-peoples');
+        var html = '';
 
-        if(data && data.length !== 0){
-            for(let i = 0; i < data.length; i++){
-                    html += '<div class="list-people__item js-list-people__item" id="people_'+ (+i + param.offset) +'">' +
-                                    '<a class="list-people_img" href="https://vk.com/id'+ data[i].id +'" target="_blank">' +
-                                            '<img src="'+ data[i].photo_100 +'" class="list-people_img-i">' +
-                                    '</a> '+
-                                    '<div class="list-people_info">' +
-                                            '<span class="list-people__name">'+ data[i].last_name +'</span> ' +
-                                            '<span class="list-people__name">'+ data[i].first_name +'</span>' +
-                                            '<button class="btn btn-primary btn-sm js-add-info" onclick="GetMaxInfo(id);" id="'+ (+i + param.offset) +'">Показать больше</button>' +
-                                    '</div>' +
-                            '</div>';
-            }
-            block.innerHTML += html;
+        if (data && data.length !== 0) {
+                for (var i = 0; i < data.length; i++) {
+                        html += '<div class="list-people__item ' + (i % 2 == 0 ? 'list-people__item_left' : 'list-people__item_right') + ' js-list-people__item" id="people_' + (+i + param.offset) + '">\n                                        <a class="list-people__item_img" href="https://vk.com/id' + data[i].id + '" target="_blank">\n                                                <img src="' + data[i].photo_100 + '" class="list-people__item_img-i">\n                                        </a>\n                                        <div class="list-people__item_info">\n                                             <p class="list-people__item_name">' + data[i].last_name + ' ' + data[i].first_name + '</p>\n                                        </div>\n                                        <button class="btn btn-primary btn-sm list-people__item_bth js-add-info" onclick="GetMaxInfo(id);" id="' + (+i + param.offset) + '">\u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435</button>\n                                </div>';
+                }
+                block.innerHTML += html;
 
-            let fin = document.querySelectorAll('.js-add-info');
-            let id = fin[fin.length - 1].getAttribute('id');
+                var fin = document.querySelectorAll('.js-add-info');
+                var id = fin[fin.length - 1].getAttribute('id');
 
-            let but;
-            if(but = document.getElementById('AddPeoples'))
-                    but.parentNode.removeChild(but);
+                var but = void 0;
+                if (but = document.getElementById('AddPeoples')) but.parentNode.removeChild(but);
 
-            if(CountLoadPeoples > (+id + 1)){
-                    html = '<div class="get-peoples" id="AddPeoples">' +
-                                    '<button class="btn btn-success btn-block" onclick="GetNewPeoples();">Добавить</button>' +
-                            '</div>';
+                if (CountLoadPeoples > +id + 1) {
+                        html = '<div class="get-peoples" id="AddPeoples">\n                                    <button class="btn btn-success btn-block" onclick="GetNewPeoples();">\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C</button>\n                            </div>';
 
-                    block.innerHTML += html;
-            }
-        }else{
-            block.innerHTML = '<h2 class="lack-people">Пользователи не найдены</h2>';
+                        block.innerHTML += html;
+                }
+        } else {
+                block.innerHTML = '<h2 class="lack-people">\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u044B</h2>';
         }
 }
 
-function GetNewPeoples(){
+function GetNewPeoples() {
         param.offset += param.count;
 
-        sendRequest('users.search', param, (data) =>{
+        sendRequest('users.search', param, function (data) {
                 dataPeople = dataPeople.concat(data.response.items);
                 CountLoadPeoples = data.response.count;
 
@@ -181,30 +202,26 @@ function GetNewPeoples(){
                 вывод доступоной информации
 -----------------------------------------------------------------
 */
-function GetMaxInfo(id){
-        let data = dataPeople[id];
-        let keys = Object.keys(data);
+function GetMaxInfo(id) {
+        var data = dataPeople[id];
+        var keys = Object.keys(data);
 
-        let form = document.getElementById('data-info');
-        let html = '';
+        var form = document.getElementById('data-info');
+        var html = '';
 
-        form.innerHTML = '';
-        if(data['city']) data['city'] = data['city'].title;
-        if(data['country'])  data['country'] = data['country'].title;
-        if(data['career'])  data['career'] = data['career'].company;
+        if (data['city']) data['city'] = data['city'].title;
+        if (data['country']) data['country'] = data['country'].title;
+        if (data['career']) data['career'] = data['career'].company;
 
-        keys.forEach((item) => {
-                if(data[item] && item.indexOf('photo') === -1 && dictionary[item]){
-                        html += '<div class="info">' +
-                                        '<div class="info_name">' +
-                                                '<p class="info_name-i">' + dictionary[item] + '</p>' +
-                                        '</div>' +
-                                        '<div class="info_text">' +
-                                                '<p class="info_name-i">' + data[item] + '</p>' +
-                                        '</div>' +
-                                '</div>';
+        html += '<table class="info">';
+
+        keys.forEach(function (item) {
+                if (data[item] && item.indexOf('photo') === -1 && dictionary[item]) {
+                        html += '<tr class="info__item">\n                                        <th class="info_name">\n                                                ' + dictionary[item] + '\n                                        </th>\n                                        <th class="info_text">\n                                                ' + data[item] + '\n                                        </th>\n                                </tr>';
                 }
         });
+
+        html += '</table>';
 
         form.innerHTML = html;
 }
@@ -215,47 +232,39 @@ function GetMaxInfo(id){
 -----------------------------------------------------------
 */
 
-let input_country = document.getElementById('country');
-if(input_country.value){
-    document.getElementById('js-city').classList.remove('_none');
+var input_country = document.getElementById('country');
+if (input_country.value) {
+        document.getElementById('js-city').classList.remove('_none');
 }
 
 input_country.oninput = function () {
-    let text = this.value;
-    let b = document.getElementById('js-city');
+        var text = undefined.value;
+        var b = document.getElementById('js-city');
 
-    if(text && b.classList.contains('_none')){
-        b.classList.remove('_none');
-    }else if(!text){
-        b.classList.add('_none');
-    }
-}
+        text && b.classList.contains('_none') ? b.classList.remove('_none') : !text ? b.classList.add('_none') : '';
+};
 
-function GetIdCity(par){
-    if(par['country'] && idCountry[par['country']] && par['city']){
-        let p = {
-            country_id: idCountry[par['country']],
-            q: par['city'],
-            need_all: 1
+function GetIdCity(par) {
+        if (par['country'] && idCountry[par['country']] && par['city']) {
+                var p = {
+                        country_id: idCountry[par['country']],
+                        q: par['city'],
+                        need_all: 1
+                };
+
+                sendRequest('database.getCities', p, function (data) {
+                        var id = GetCity(par['city'], data.response.items);
+                        id !== -1 ? param['city'] = id : delete param['city'];
+                });
+        } else if (!par['city']) {
+                delete param['city'];
         }
-
-        sendRequest('database.getCities', p, (data) => {
-            let id = GetCity(par['city'], data.response.items);
-            (id !== -1)? param['city'] = id : delete param['city'];
-        })
-    }else if(!par['city']){
-        delete param['city'];
-    }
 }
 
-function GetCity(city, items){
-    if(items.length == 1)
-        return items[0].id;
+function GetCity(city, items) {
+        if (items.length == 1) return items[0].id;
 
-    for(let i = 0; i < items.length; i++){
-        if(city.length == items[i].title.length)
-            return items[i].id;
-    }
-
-    return -1;
+        for (var i = 0; i < items.length; i++) {
+                if (city.length == items[i].title.length) return items[i].id;
+        }return -1;
 }
