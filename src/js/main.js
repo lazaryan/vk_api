@@ -72,11 +72,11 @@ function SetData(){
         let par = form.querySelectorAll('.js-list__item');
         let p = {};
 
-        for (let i = 0; i < par.length; i++){
-                let data = par[i].querySelectorAll('.js-data');
+        for (let param of par){
+                let data = param.querySelectorAll('.js-data');
 
-                for(let j = 0; j < data.length; j++)
-                    p[$.trim(data[j].dataset.name)] = $.trim(data[j].value);
+                for(let info of data)
+                    p[$.trim(info.dataset.name)] = $.trim(info.value);
         }
 
         comleteData(p);
@@ -93,18 +93,12 @@ function comleteData(par){
 
 function getData(par, keys){
         keys.forEach((item) => {
-                if(item != 'country' && item != 'city' && item.indexOf('name') == -1){
-                        par[item] ? param[item] = par[item] : delete param[item];
-                }
+                (item != 'country' && item != 'city' && item.indexOf('name') == -1) ? (par[item] ? param[item] = par[item] : delete param[item]) : '';
         });
 }
 
 function getCountry(par){
-        if(par['country'] && idCountry[par['country']]){
-                param['country'] = idCountry[par['country']];
-        }else{
-                delete param['country'];
-        }
+        (par['country'] && idCountry[par['country']]) ? param['country'] = idCountry[par['country']] : delete param['country'];
 }
 
 function GetName(par, keys){
@@ -126,15 +120,14 @@ function GetListPeoples(data){
 
         if(data && data.length !== 0){
             for(let i = 0; i < data.length; i++){
-                        html += `<div class="list-people__item js-list-people__item" id="people_${+i + param.offset}">
-                                        <a class="list-people_img" href="https://vk.com/id${data[i].id}" target="_blank">
-                                                <img src="${data[i].photo_100}" class="list-people_img-i">
+                        html += `<div class="list-people__item ${i % 2 == 0 ? 'list-people__item_left' : 'list-people__item_right'} js-list-people__item" id="people_${+i + param.offset}">
+                                        <a class="list-people__item_img" href="https://vk.com/id${data[i].id}" target="_blank">
+                                                <img src="${data[i].photo_100}" class="list-people__item_img-i">
                                         </a>
-                                        <div class="list-people_info">
-                                                <span class="list-people__name">${data[i].last_name}</span>
-                                                <span class="list-people__name">${data[i].first_name}</span>
-                                                <button class="btn btn-primary btn-sm js-add-info" onclick="GetMaxInfo(id);" id="${+i + param.offset}">Показать больше</button>
+                                        <div class="list-people__item_info">
+                                             <p class="list-people__item_name">${data[i].last_name} ${data[i].first_name}</p>
                                         </div>
+                                        <button class="btn btn-primary btn-sm list-people__item_bth js-add-info" onclick="GetMaxInfo(id);" id="${+i + param.offset}">Показать больше</button>
                                 </div>`;
             }
             block.innerHTML += html;
@@ -180,7 +173,6 @@ function GetMaxInfo(id){
         let form = document.getElementById('data-info');
         let html = '';
 
-        form.innerHTML = '';
         if(data['city'])        data['city']    = data['city'].title;
         if(data['country'])     data['country'] = data['country'].title;
         if(data['career'])      data['career']  = data['career'].company;
@@ -212,7 +204,7 @@ if(input_country.value){
     document.getElementById('js-city').classList.remove('_none');
 }
 
-input_country.oninput = function () {
+input_country.oninput = () => {
     let text = this.value;
     let b = document.getElementById('js-city');
 

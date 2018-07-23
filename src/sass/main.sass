@@ -18,39 +18,50 @@ button
 	overflow: auto
 
 	&__item
-		display: inline-block
-		width: 100%
-		margin: 0 0 10px 0
-		padding: 0
+		width: 48%
+		margin-bottom: 20px
 
-	&_img
-		width: 70px
-		height: 70px
-		float: left
-		margin-left: 15px
+		&_left
+			float: left
 
-		&-i
+		&_right
+			float: right
+
+		&_img
 			width: 100%
-			height: 100%
-			margin: 0 auto
-			border-radius: 50%
+			display: block
+			height: auto
 
-	&_info
-		width: calc(100% - 95px)
-		padding-left: 10px
-		float: right
+			&-i
+				width: 100%
 
-	&__name
-		display: inline-block
-		color: #000
-		font-size: 16px
-		line-height: 1.5
-		margin-bottom: 15px
+		&_info
+			width: 100%
+			margin-top: 5px
+
+		&_name
+			font-size: 13px
+			color: #42648b
+			transition: .5s
+			line-height: 25px
+			white-space: nowrap
+			overflow: hidden
+			text-overflow: ellipsis
+
+			&:hover
+				text-decoration: underline
+
+		&_bth
+			width: 90%
+			margin-top: -5px
 
 .data
 	width: 100%
 	margin: 0
 	padding: 0
+
+	&-peoples
+		width: 100%
 
 .info
 	width: 100%
