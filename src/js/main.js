@@ -177,18 +177,22 @@ function GetMaxInfo(id){
         if(data['country'])     data['country'] = data['country'].title;
         if(data['career'])      data['career']  = data['career'].company;
 
+        html += `<table class="info">`;
+
         keys.forEach((item) => {
                 if(data[item] && item.indexOf('photo') === -1 && dictionary[item]){
-                        html += `<div class="info">
-                                        <div class="info_name">
-                                                <p class="info_name-i">${dictionary[item]}</p>
-                                        </div>
-                                        <div class="info_text">
-                                                <p class="info_name-i">${data[item]}</p>
-                                        </div>
-                                </div>`;
+                        html += `<tr class="info__item">
+                                        <th class="info_name">
+                                                ${dictionary[item]}
+                                        </th>
+                                        <th class="info_text">
+                                                ${data[item]}
+                                        </th>
+                                </tr>`;
                 }
         });
+
+        html += `</table>`;
 
         form.innerHTML = html;
 }

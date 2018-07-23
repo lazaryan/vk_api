@@ -42,14 +42,10 @@ button
 		&_name
 			font-size: 13px
 			color: #42648b
-			transition: .5s
 			line-height: 25px
 			white-space: nowrap
 			overflow: hidden
 			text-overflow: ellipsis
-
-			&:hover
-				text-decoration: underline
 
 		&_bth
 			width: 90%
@@ -60,6 +56,11 @@ button
 	margin: 0
 	padding: 0
 
+	&::after
+		content: ''
+		display: block
+		clear: both
+
 	&-peoples
 		width: 100%
 
@@ -67,13 +68,14 @@ button
 	width: 100%
 
 	&_name
-		width: 150px
-		height: 100%
-		margin-left: 5px
-		float: left
+		font-weight: 600
+		font-size: 15px
+		padding: 7px 0
 
 	&_text
-		float: right
+		font-weight: 500
+		font-size: 14px
+		padding: 7px 4px
 
 .lack-people
 	text-align: center
